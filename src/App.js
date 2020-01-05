@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import GetService from './services/getService';
+import './App.scss';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Pokemon from './components/pokemon';
+
+export default class App extends Component {
+
+  getService = new GetService();
+  
+  state = {
+    pokemons: [],
+    next: null,
+    prev: null,
+    limit: 20
+  }
+
+  componentDidMount() {
+    this.getService.getPokemons(this.state.limit)
+     .then(pokemons => { 
+          this.setState({
+            pokemons
+          })
+        })
+  }
+
+  render() {
+    const list = this.state.pokemons.map(item => {
+    return (<Pokemon key={item.name} item={item}></Pokemon>);
+    })
+    return (
+      <div className="App">
+          <div className="container">
+            <div className="pokemons">
+              {list}
+            </div>
+          </div>
+      </div>
+    );
+  }
 }
-
-export default App;
